@@ -13,6 +13,7 @@ jobs:
     steps:
         - uses: olegtarasov/get-tag@v2.1
           id: tagName
+          name: tagname
         - uses: actions/checkout@v2
           name: checkout
         - name: golang
@@ -32,5 +33,5 @@ jobs:
             ko version
         - name: publish
           run: |
-            echo "tagname set to $GIT_TAG_NAME"
+            echo "tagname: $GIT_TAG_NAME"
             ko publish ./cmd/direktiv-knative-source/ -B -t $GIT_TAG_NAME
