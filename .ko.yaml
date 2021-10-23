@@ -1,0 +1,8 @@
+builds:
+- id: receiver
+  flags:
+  - -tags
+  - netgo
+  ldflags:
+  - -s -w
+  - -extldflags "-static"

@@ -1,0 +1,17 @@
+apiVersion: sources.knative.dev/v1
+kind: ContainerSource
+metadata:
+  name: direktiv-source
+spec:
+  template:
+    spec:
+      containers:
+        - image: localhost:5000/receiver:v0.0.1
+          name: direktiv-source
+          args:
+            - --direktiv=direktiv-flow.default:3333
+  sink:
+    ref:
+      apiVersion: eventing.knative.dev/v1
+      kind: Broker
+      name: default
