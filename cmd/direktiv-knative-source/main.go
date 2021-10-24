@@ -138,6 +138,7 @@ func main() {
 			}
 		}
 
+		logger.Infof("waiting for event")
 		response, err := stream.Recv()
 		if err != nil {
 			logger.Errorf("failed to receive message: %v", err)

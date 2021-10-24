@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-        - image: localhost:5000/receiver:v0.0.1
+        - image: localhost:5000/direktiv-knative-source:v0.0.1
           name: direktiv-source
           args:
             - --direktiv=direktiv-flow.default:3333

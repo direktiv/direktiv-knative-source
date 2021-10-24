@@ -1,5 +1,5 @@
 builds:
-- id: receiver
+- id: direktiv-knative-source
   flags:
   - -tags
   - netgo
