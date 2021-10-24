@@ -35,3 +35,4 @@ jobs:
           run: |
             echo "tagname: $GIT_TAG_NAME"
             ko publish ./cmd/direktiv-knative-source/ -B -t $GIT_TAG_NAME
+            ko publish ./cmd/direktiv-knative-source/ -B
