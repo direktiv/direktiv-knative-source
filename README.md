@@ -1,6 +1,6 @@
 # Event Source for Direktiv and Knative
 
-This repository contains the Direktiv source for Knative. It forwards events created in Direktiv to Knative. These events can be either coming from an explicit [GenerateEvent state](https://docs.direktiv.io/docs/specification.html#generateeventstate) or actions within the system, e.g. creating namespaces.
+This repository contains the Direktiv source for Knative. It forwards events created in [Direktiv](https://github.com/vorteil/direktiv) to Knative. These events can be either coming from an explicit [GenerateEvent state](https://docs.direktiv.io/docs/specification.html#generateeventstate) or actions within the system, e.g. creating namespaces.
 
 <p align="center">
 <img src="assets/source.png"/>
