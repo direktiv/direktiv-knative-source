@@ -6,7 +6,7 @@ This repository contains the Direktiv source for Knative. It forwards events cre
 <img src="assets/source.png"/>
 </p>
 
-The source is implemented as [ContainerSource](https://knative.dev/docs/eventing/samples/container-source/) and requires one argument to connect to the Direktiv instance via GRPC.
+The source is implemented as [ContainerSource](https://knative.dev/docs/eventing/samples/container-source/) and requires one argument to connect to the Direktiv instance via GRPC. Direktiv will then stream events to this source.
 
 ```yaml
 apiVersion: sources.knative.dev/v1
@@ -27,3 +27,7 @@ spec:
       kind: Broker
       name: default
 ```
+
+## Example
+
+For a full Direktiv, Knative, Kafka example, click [here](https://docs.direktiv.io/docs/events/knative/example.html).
