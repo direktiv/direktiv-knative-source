@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      KO_DOCKER_REPO: docker.io/vorteil
+      KO_DOCKER_REPO: docker.io/direktiv
     steps:
         - uses: olegtarasov/get-tag@v2.1
           id: tagName

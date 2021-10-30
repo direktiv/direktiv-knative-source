@@ -12,6 +12,6 @@ spec:
             - --direktiv=direktiv-flow.default:3333
   sink:
     ref:
-      apiVersion: eventing.knative.dev/v1
-      kind: Broker
-      name: default
+      apiVersion: v1
+      kind: Service
+      name: event-display

@@ -1,0 +1,22 @@
+apiVersion: sources.knative.dev/v1
+kind: ContainerSource
+metadata:
+  name: snmp-source
+spec:
+  template:
+    spec:
+      containers:
+        - image: localhost:5000/snmp-source:v0.0.1
+          name: snmp-source
+          env:
+            - name: DEBUG
+              value: "true"
+  sink:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: event-display
+    # ref:
+    #   apiVersion: eventing.knative.dev/v1
+    #   kind: Broker
+    #     name: default
