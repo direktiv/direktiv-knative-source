@@ -35,6 +35,8 @@ eventing:
   enabled: true
 ```
 
+To install an in-memory channel and MT broker for testing the script *scripts/install-eventing.sh* in the Direktiv Github repository can be used. 
+
 ## Example
 
 For a full Direktiv, Knative, Kafka example, click [here](https://docs.direktiv.io/docs/events/knative/example.html).
