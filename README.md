@@ -2,9 +2,10 @@
 
 This repository contains ContainerSources for [Knative Eventing](https://knative.dev/docs/eventing/). The following sources are available:
 
-- [Direktiv](cmd/direktiv-source/README.md)
-  - type/source are set in flow in Direktiv
-- [SNMP](cmd/snmp-source/README.md)
+- [Direktiv](cmd/direktiv-source/README.md) (Image: direktiv/direktiv-source)
+  - type/source are set in flow in [Direktiv](https://github.com/direktiv/direktiv)
+  - Image: direktiv/direktiv-source
+- [SNMP](cmd/snmp-source/README.md) (Image: direktiv/snmp-source)
   - source: direktiv/snmp/source
   - type: direktiv.snmp
 
@@ -31,7 +32,7 @@ spec:
 
 ## Testing
 
-To test the components an event receiver is required. Knative provides an event display service to log events. The following examples applies to Direktiv environments. For other environments please remove the label and annotation.
+To test the components an event receiver is required. Knative provides an event display service to log events. The following examples applies to Direktiv environments. For other environments please remove the label and annotation because they are [Direktiv](https://github.com/direktiv/direktiv) specific.
 
 *Test Event Receiver*
 ```yaml
@@ -64,6 +65,5 @@ hack/install.sh <name>
 
 Tool required for building:
 
-- [go]()
-- [ko]()
-- [make]()
+- [go](https://golang.org/)
+- [ko](https://github.com/google/ko)
