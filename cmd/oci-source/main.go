@@ -150,6 +150,16 @@ func basicAuthHandler(h http.Handler) http.Handler {
 
 		fmt.Println("unauthorized request")
 
+		body, err := ioutil.ReadAll(r.Body)
+		fmt.Printf("%v %v\n", string(body), err)
+
+		for name, values := range r.Header {
+			// Loop over all values for the name.
+			for _, value := range values {
+				fmt.Println(name, value)
+			}
+		}
+
 		// not authenticated
 		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
