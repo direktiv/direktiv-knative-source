@@ -13,11 +13,33 @@ import (
 	"github.com/vorteil/direktiv-knative-source/pkg/direktivsource"
 )
 
+const (
+	topicNameHeader = "X-Oci-Ns-Topicname"
+	topciURLHeader  = "X-Oci-Ns-Confirmationurl"
+)
+
 type ociHandler struct {
 	esr *direktivsource.EventSourceReceiver
 }
 
 func (oci *ociHandler) indexHandler(res http.ResponseWriter, req *http.Request) {
+
+	// check if this is the confirmation url request
+	if req.Header.Get(topicNameHeader) != "" && req.Header.Get(topciURLHeader) != "" {
+
+		url := req.Header.Get(topciURLHeader)
+		oci.esr.Logger().Infof("got confirmation url: %v", url)
+
+		_, err := http.Get(url)
+		if err != nil {
+			oci.esr.Logger().Errorf("can not send confirmation: %v", err)
+			res.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		res.WriteHeader(http.StatusOK)
+		return
+	}
 
 	for name, values := range req.Header {
 		for _, value := range values {
