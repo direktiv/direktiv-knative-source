@@ -35,6 +35,11 @@ func (oci *ociHandler) convertCloudEvent(old []byte) (*event.Event, error) {
 		return ev, err
 	}
 
+	// it is not an oci event
+	if sourceEvent["cloudEventsVersion"] == nil {
+		return ev, fmt.Errorf("not an oci event")
+	}
+
 	// rename old to new attributes
 	renameList := map[string]string{
 		"cloudEventsVersion": "specversion",
