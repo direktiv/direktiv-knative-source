@@ -1,6 +1,15 @@
+# Oracle Cloud Infrastructure (OCI) Knative Source
 
+This source receives events from Oracle Cloud Event Service. To use it there need to be a [Oracle Cloud Notification](https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/managingtopicsandsubscriptions.htm) of type *HTTPS*. There are a few limitations in Oracle Cloud calling an external HTTPS service:
 
+- Only Basic Authentication is supported
+- HTTPS target needs a valid certificate (no self-signed)
+- Only POST requests are supported
+- No query parameters are allowed
 
+This ContainerSource requires a Secret uses as Basic Authentication username and password:
+
+*Basic Auth Secret Example*
 ```yaml
 cat <<-EOF | kubectl apply -f -
 ---
@@ -15,7 +24,45 @@ stringData:
 EOF
 ```
 
-Service
+This secret can be referenced in the ContainerSource description:
+
+```yaml
+cat <<-EOF | kubectl apply -f -
+---
+apiVersion: sources.knative.dev/v1
+kind: ContainerSource
+metadata:
+  name: oci-source
+spec:
+  template:
+    spec:
+      containers:
+        - image: localhost:5000/oci-source:v0.0.1
+          name: oci-source
+          env:
+            - name: DEBUG
+              value: "true"
+            - name: BASICAUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: oci-basic-auth
+                  key: username
+            - name: BASICAUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oci-basic-auth
+                  key: password
+  sink:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: event-display
+EOF
+```
+
+To use this source it has to be exposed externally for Oracle to post data to this source. To do this there are two options; either create a service of type LoadBalancer or creating an Ingress in Kubernetes to an existing IngressController.
+
+*Service Example*
 ```yaml
 cat <<-EOF | kubectl apply -f -
 ---
@@ -31,7 +78,8 @@ spec:
 EOF
 ```
 
-Ingress
+If this sourceis used it can be easily added to Kong's IngressController:
+
 ```yaml
 cat <<-EOF | kubectl apply -f -
 ---
