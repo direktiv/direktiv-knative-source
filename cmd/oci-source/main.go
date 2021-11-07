@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/json"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"os"
 
+	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/cloudevents/sdk-go/v2/event"
 	"github.com/gorilla/mux"
 	"github.com/vorteil/direktiv-knative-source/pkg/direktivsource"
@@ -102,22 +104,28 @@ func (oci *ociHandler) indexHandler(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	for name, values := range req.Header {
-		for _, value := range values {
-			oci.esr.Logger().Infof(">>1 %v %v", name, value)
-		}
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		oci.esr.Logger().Errorf("can not read body: %v", err)
+		res.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
-	body, err := ioutil.ReadAll(req.Body)
-	oci.esr.Logger().Infof(">>2 %v %v", string(body), err)
-
 	// check if it is a cloudevent
-	// respond to oci
 	ev, err := oci.convertCloudEvent(body)
+	if err != nil {
+		oci.esr.Logger().Errorf("can not convert cloudevent: %v", err)
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	oci.esr.Logger().Infof("EVENT %v", ev)
+	oci.esr.OverridesApply(ev)
+	ctx := cloudevents.ContextWithTarget(context.Background(), oci.esr.Env().Sink)
+	if result := oci.esr.Client().Send(ctx, *ev); cloudevents.IsUndelivered(result) {
+		oci.esr.Logger().Errorf("failed to send, %v", result)
+	}
 
-	fmt.Fprint(res, "Hello, World!")
+	res.WriteHeader(http.StatusOK)
 }
 
 func basicAuthHandler(h http.Handler) http.Handler {
