@@ -3,12 +3,14 @@ package main
 import (
 	"crypto/sha256"
 	"crypto/subtle"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/cloudevents/sdk-go/v2/event"
 	"github.com/gorilla/mux"
 	"github.com/vorteil/direktiv-knative-source/pkg/direktivsource"
 )
@@ -20,6 +22,56 @@ const (
 
 type ociHandler struct {
 	esr *direktivsource.EventSourceReceiver
+}
+
+// oracle uses cloudevent spec 0.1, convert to 1.0
+func (oci *ociHandler) convertCloudEvent(old []byte) (*event.Event, error) {
+
+	ev := &event.Event{}
+
+	var sourceEvent map[string]interface{}
+	err := json.Unmarshal(old, &sourceEvent)
+	if err != nil {
+		return ev, err
+	}
+
+	// rename old to new attributes
+	renameList := map[string]string{
+		"cloudEventsVersion": "specversion",
+		"eventID":            "id",
+		"eventTime":          "time",
+		"eventTypeVersion":   "",
+		"contentType":        "datacontenttype",
+		"eventType":          "type",
+	}
+
+	for k, v := range renameList {
+		data := sourceEvent[k]
+		delete(sourceEvent, k)
+		if v != "" {
+			sourceEvent[v] = data
+		}
+	}
+
+	// update spec version
+	sourceEvent["specversion"] = "1.0"
+
+	// move out extensions
+	extensions := sourceEvent["extensions"]
+	delete(sourceEvent, "extensions")
+	for k, v := range extensions.(map[string]interface{}) {
+		sourceEvent[k] = v
+	}
+
+	b, err := json.MarshalIndent(sourceEvent, "", "\t")
+	err = json.Unmarshal(b, ev)
+
+	if os.Getenv("DEBUG") != "" {
+		oci.esr.Logger().Debugf("%v", string(b))
+	}
+
+	return ev, err
+
 }
 
 func (oci *ociHandler) indexHandler(res http.ResponseWriter, req *http.Request) {
@@ -37,6 +89,7 @@ func (oci *ociHandler) indexHandler(res http.ResponseWriter, req *http.Request) 
 			return
 		}
 
+		oci.esr.Logger().Infof("subscription confirmed")
 		res.WriteHeader(http.StatusOK)
 		return
 	}
@@ -52,6 +105,9 @@ func (oci *ociHandler) indexHandler(res http.ResponseWriter, req *http.Request) 
 
 	// check if it is a cloudevent
 	// respond to oci
+	ev, err := oci.convertCloudEvent(body)
+
+	oci.esr.Logger().Infof("EVENT %v", ev)
 
 	fmt.Fprint(res, "Hello, World!")
 }
