@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/cloudevents/sdk-go/v2/event"
 	"github.com/gorilla/mux"
@@ -132,6 +132,8 @@ func basicAuthHandler(h http.Handler) http.Handler {
 			}
 		}
 
+		fmt.Println("unauthorized request")
+
 		// not authenticated
 		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -139,28 +141,28 @@ func basicAuthHandler(h http.Handler) http.Handler {
 	})
 }
 
-func (oci *ociHandler) startOCIReceiver() {
+func (oci *ociHandler) startOCIReceiver() error {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", oci.indexHandler).Methods("POST")
 	router.Use(basicAuthHandler)
 
-	http.ListenAndServe(":8000", router)
+	return http.ListenAndServe(":8000", router)
 
 }
 
 func main() {
 
 	esr := direktivsource.NewEventSourceReceiver("oci-source")
-	esr.Logger().Infof("ESR %v", esr)
-	// start mux
 
 	oci := &ociHandler{
 		esr,
 	}
 
-	go oci.startOCIReceiver()
-
-	time.Sleep(60 * time.Second)
+	// start mux
+	err := oci.startOCIReceiver()
+	if err != nil {
+		log.Fatalf("can not run oci source: %v", err)
+	}
 
 }
