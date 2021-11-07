@@ -1,6 +1,6 @@
 # Oracle Cloud Infrastructure (OCI) Knative Source
 
-This source receives events from Oracle Cloud Event Service. To use it there need to be a [Oracle Cloud Notification](https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/managingtopicsandsubscriptions.htm) of type *HTTPS*. There are a few limitations in Oracle Cloud calling an external HTTPS service:
+This source receives events from Oracle Cloud Event Service. It converts the event from cloudevent specification 0.1 to 1.0. To use it there need to be a [Oracle Cloud Notification](https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/managingtopicsandsubscriptions.htm) of type *HTTPS*. There are a few limitations in Oracle Cloud calling an external HTTPS service:
 
 - Only Basic Authentication is supported
 - HTTPS target needs a valid certificate (no self-signed)
@@ -78,7 +78,7 @@ spec:
 EOF
 ```
 
-If this sourceis used it can be easily added to Kong's IngressController:
+If this source is used within a [Direktiv](https://github.com/direktiv/direktiv) instance it can be easily added to Kong's IngressController. The URL used in OCI would be *https://admin:admin@myserver.com/oci*
 
 ```yaml
 cat <<-EOF | kubectl apply -f -
