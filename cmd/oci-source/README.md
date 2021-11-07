@@ -1,11 +1,6 @@
 # Oracle Cloud Infrastructure (OCI) Knative Source
 
-This source receives events from Oracle Cloud Event Service. It converts the event from cloudevent specification 0.1 to 1.0. To use it there need to be a [Oracle Cloud Notification](https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/managingtopicsandsubscriptions.htm) of type *HTTPS*. There are a few limitations in Oracle Cloud calling an external HTTPS service:
-
-- Only Basic Authentication is supported
-- HTTPS target needs a valid certificate (no self-signed)
-- Only POST requests are supported
-- No query parameters are allowed
+This source receives events from Oracle Cloud Event Service. It converts the event from cloudevent specification 0.1 to 1.0. To use it there need to be a [Oracle Cloud Notification](https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/managingtopicsandsubscriptions.htm) of type *HTTPS*.
 
 This ContainerSource requires a Secret uses as Basic Authentication username and password:
 
