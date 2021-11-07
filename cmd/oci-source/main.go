@@ -58,9 +58,12 @@ func (oci *ociHandler) convertCloudEvent(old []byte) (*event.Event, error) {
 
 	// move out extensions
 	extensions := sourceEvent["extensions"]
-	delete(sourceEvent, "extensions")
-	for k, v := range extensions.(map[string]interface{}) {
-		sourceEvent[k] = v
+
+	if extensions != nil {
+		delete(sourceEvent, "extensions")
+		for k, v := range extensions.(map[string]interface{}) {
+			sourceEvent[k] = v
+		}
 	}
 
 	b, err := json.MarshalIndent(sourceEvent, "", "\t")
