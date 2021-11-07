@@ -1,0 +1,28 @@
+apiVersion: sources.knative.dev/v1
+kind: ContainerSource
+metadata:
+  name: oci-source
+spec:
+  template:
+    spec:
+      containers:
+        - image: localhost:5000/oci-source:v0.0.1
+          name: oci-source
+          env:
+            - name: DEBUG
+              value: "true"
+            - name: BASICAUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: oci-basic-auth
+                  key: username
+            - name: BASICAUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oci-basic-auth
+                  key: password
+  sink:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: event-display
