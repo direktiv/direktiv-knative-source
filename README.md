@@ -8,6 +8,9 @@ This repository contains ContainerSources for [Knative Eventing](https://knative
 - [SNMP](cmd/snmp-source/README.md) (Image: direktiv/snmp-source)
   - source: direktiv/snmp/source
   - type: direktiv.snmp
+- [Oracle Cloud Events](cmd/oci-source/README.md) (Image: direktiv/oci-source)
+  - source/source based on the [event from Oracle](https://docs.oracle.com/en-us/iaas/Content/Events/Reference/eventsproducers.htm)
+
 
 ## Logging
 
