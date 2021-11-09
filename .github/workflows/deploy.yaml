@@ -38,3 +38,5 @@ jobs:
             ko publish ./cmd/direktiv-source/ -B
             ko publish ./cmd/snmp-source/ -B -t $GIT_TAG_NAME
             ko publish ./cmd/snmp-source/ -B
+            ko publish ./cmd/oci-source/ -B -t $GIT_TAG_NAME
+            ko publish ./cmd/oci-source/ -B
